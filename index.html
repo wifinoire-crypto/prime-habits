@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prime Habits</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div>
+        <h1>Prime Habits</h1>
+        <p class="muted">Simple daily habit tracker</p>
+      </div>
+
+      <nav>
+        <button class="nav-btn active" data-view="today">Today</button>
+        <button class="nav-btn" data-view="habits">Habits</button>
+        <button class="nav-btn" data-view="progress">Progress</button>
+        <button class="nav-btn" data-view="reflect">Reflect</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow" id="dateLabel"></p>
+          <h2 id="viewTitle">Today</h2>
+        </div>
+        <button id="resetDemoBtn" class="ghost-btn">Reset Demo</button>
+      </section>
+
+      <section id="todayView" class="view active">
+        <div class="stats-grid">
+          <div class="card stat-card">
+            <p class="muted">Completed Today</p>
+            <h3 id="completedCount">0/0</h3>
+          </div>
+          <div class="card stat-card">
+            <p class="muted">Daily Progress</p>
+            <h3 id="dailyPercent">0%</h3>
+          </div>
+          <div class="card stat-card">
+            <p class="muted">Best Streak</p>
+            <h3 id="bestStreak">0 days</h3>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <h3>Today's Habits</h3>
+            <p class="muted">Tap to mark complete</p>
+          </div>
+          <div id="todayHabitList" class="habit-list"></div>
+        </div>
+      </section>
+
+      <section id="habitsView" class="view">
+        <div class="card">
+          <h3>Add Habit</h3>
+          <form id="habitForm" class="habit-form">
+            <input id="habitName" type="text" placeholder="Habit name, e.g. Study math" required />
+            <select id="habitCategory">
+              <option value="Study">Study</option>
+              <option value="Health">Health</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+            </select>
+            <button type="submit">Add</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <h3>All Habits</h3>
+            <p class="muted">Edit by deleting and re-adding. Primitive, but functional. Like most school portals.</p>
+          </div>
+          <div id="allHabitList" class="habit-list"></div>
+        </div>
+      </section>
+
+      <section id="progressView" class="view">
+        <div class="card">
+          <h3>Weekly Progress</h3>
+          <div id="weekBars" class="week-bars"></div>
+        </div>
+
+        <div class="card">
+          <h3>Habit Streaks</h3>
+          <div id="streakList" class="habit-list"></div>
+        </div>
+      </section>
+
+      <section id="reflectView" class="view">
+        <div class="card">
+          <h3>Daily Reflection</h3>
+          <p class="muted">Write a quick note, then use it with ChatGPT to improve tomorrow.</p>
+          <textarea id="reflectionBox" placeholder="What went well? What should I improve tomorrow?"></textarea>
+          <button id="saveReflectionBtn">Save Reflection</button>
+        </div>
+
+        <div class="card">
+          <h3>ChatGPT Prompt</h3>
+          <p class="muted">Copy this into ChatGPT for a habit review.</p>
+          <pre id="promptBox"></pre>
+          <button id="copyPromptBtn" class="ghost-btn">Copy Prompt</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

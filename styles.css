@@ -1,0 +1,282 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  background: #f4f7fb;
+  color: #172033;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.sidebar {
+  background: #111827;
+  color: white;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.muted {
+  color: #7b8497;
+  font-size: 14px;
+}
+
+.sidebar .muted {
+  color: #aab2c5;
+}
+
+nav {
+  margin-top: 36px;
+  display: grid;
+  gap: 10px;
+}
+
+.nav-btn {
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 16px;
+  text-align: left;
+  font-size: 15px;
+  background: transparent;
+  color: #d7dce8;
+  cursor: pointer;
+}
+
+.nav-btn.active,
+.nav-btn:hover {
+  background: #2563eb;
+  color: white;
+}
+
+.main {
+  padding: 28px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #2563eb;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+h2 {
+  margin: 4px 0 0;
+  font-size: 34px;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: grid;
+  gap: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.card {
+  background: white;
+  border-radius: 22px;
+  padding: 22px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, .08);
+}
+
+.stat-card h3 {
+  margin: 8px 0 0;
+  font-size: 30px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.habit-form {
+  display: grid;
+  grid-template-columns: 1fr 160px 100px;
+  gap: 12px;
+}
+
+input,
+select,
+textarea {
+  border: 1px solid #d9dfeb;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+textarea {
+  width: 100%;
+  min-height: 160px;
+  resize: vertical;
+  margin: 12px 0;
+}
+
+button {
+  border: 0;
+  border-radius: 14px;
+  padding: 13px 16px;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ghost-btn {
+  background: #e8eefc;
+  color: #1d4ed8;
+}
+
+.habit-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.habit-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #edf0f6;
+  border-radius: 18px;
+  background: #fbfcff;
+}
+
+.check {
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+  border: 2px solid #2563eb;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: white;
+}
+
+.check.done {
+  background: #2563eb;
+}
+
+.habit-meta h4 {
+  margin: 0;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #edf3ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.delete-btn {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.week-bars {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.day-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 50px;
+  align-items: center;
+  gap: 12px;
+}
+
+.bar-track {
+  height: 14px;
+  border-radius: 999px;
+  background: #e8edf6;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 999px;
+}
+
+pre {
+  white-space: pre-wrap;
+  background: #f4f7fb;
+  padding: 16px;
+  border-radius: 16px;
+  color: #263044;
+}
+
+@media (max-width: 800px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    padding: 18px;
+  }
+
+  nav {
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 18px;
+  }
+
+  .nav-btn {
+    text-align: center;
+    padding: 11px 8px;
+  }
+
+  .main {
+    padding: 18px;
+  }
+
+  .stats-grid,
+  .habit-form {
+    grid-template-columns: 1fr;
+  }
+
+  .section-head,
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
