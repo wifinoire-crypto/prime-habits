@@ -1,4 +1,4 @@
-import { supabase } from './supabase'
+import { supabaseAdmin as supabase } from './supabase'
 import { db as local } from './local-store'
 import type { Watchlist, WatchedAsset, ResearchReport, Strategy, BacktestRun, AgentRun, Timeframe } from '@/lib/types'
 

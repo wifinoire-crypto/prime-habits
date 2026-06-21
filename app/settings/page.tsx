@@ -31,6 +31,7 @@ const CONFIG_ITEMS = [
     items: [
       { env: 'NEXT_PUBLIC_SUPABASE_URL', values: 'https://xxx.supabase.co', desc: 'Supabase project URL for persistent storage' },
       { env: 'NEXT_PUBLIC_SUPABASE_ANON_KEY', values: 'your key', desc: 'Supabase anon key for client-side access' },
+      { env: 'SUPABASE_SERVICE_ROLE_KEY', values: 'your key', desc: 'Supabase service role key — server-side only, bypasses RLS for API routes' },
     ],
   },
 ]
