@@ -2,6 +2,12 @@ import PageLayout from '@/components/layout/PageLayout'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 
+function mask(val: string | undefined): string {
+  if (!val) return ''
+  if (val.length <= 8) return '••••••••'
+  return val.slice(0, 6) + '••••••••' + val.slice(-3)
+}
+
 const CONFIG_ITEMS = [
   {
     group: 'Market Data',
@@ -36,10 +42,34 @@ const CONFIG_ITEMS = [
   },
 ]
 
-// EnvStatus removed — process.env not accessible from client components.
-// Status is shown statically; users configure keys in .env.local
-
 export default function SettingsPage() {
+  const env = {
+    MARKET_DATA_PROVIDER: process.env.MARKET_DATA_PROVIDER,
+    FINNHUB_API_KEY: process.env.FINNHUB_API_KEY,
+    ALPHA_VANTAGE_API_KEY: process.env.ALPHA_VANTAGE_API_KEY,
+    RESEARCH_PROVIDER: process.env.RESEARCH_PROVIDER,
+    PERPLEXITY_API_KEY: process.env.PERPLEXITY_API_KEY,
+    TAVILY_API_KEY: process.env.TAVILY_API_KEY,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+  } as Record<string, string | undefined>
+
+  const hasSupabase = !!(env.NEXT_PUBLIC_SUPABASE_URL && env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  const hasAI = !!env.ANTHROPIC_API_KEY
+  const hasMarketData = !!(env.FINNHUB_API_KEY || env.ALPHA_VANTAGE_API_KEY)
+  const hasResearch = !!(env.PERPLEXITY_API_KEY || env.TAVILY_API_KEY)
+
+  const systemStatus = [
+    { label: 'Mock Market Data', status: 'active' as const, note: 'Always available as fallback' },
+    { label: 'Live Market Data', status: hasMarketData ? 'active' as const : 'limited' as const, note: hasMarketData ? `Provider: ${env.MARKET_DATA_PROVIDER ?? 'finnhub'}` : 'Add FINNHUB_API_KEY to enable' },
+    { label: 'AI Report Generation', status: hasAI ? 'active' as const : 'limited' as const, note: hasAI ? `Model: ${env.ANTHROPIC_MODEL ?? 'claude-haiku-4-5-20251001'}` : 'Add ANTHROPIC_API_KEY to enable' },
+    { label: 'Live News / Research', status: hasResearch ? 'active' as const : 'limited' as const, note: hasResearch ? `Provider: ${env.RESEARCH_PROVIDER ?? 'perplexity'}` : 'Add PERPLEXITY_API_KEY or TAVILY_API_KEY' },
+    { label: 'Persistent Storage', status: hasSupabase ? 'active' as const : 'limited' as const, note: hasSupabase ? 'Supabase connected' : 'In-memory only — resets on server restart' },
+  ]
+
   return (
     <PageLayout title="Settings" subtitle="Configure API keys and data providers">
       <div className="max-w-3xl space-y-5">
@@ -60,21 +90,46 @@ export default function SettingsPage() {
           <Card key={group.group} className="p-5">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">{group.group}</h3>
             <div className="space-y-3">
-              {group.items.map(item => (
-                <div key={item.env} className="flex items-start gap-4 py-2.5 border-b border-terminal-border last:border-0">
-                  <div className="flex-1 min-w-0">
-                    <code className="text-sm font-mono text-market-blue">{item.env}</code>
-                    <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
-                    <p className="text-xs text-slate-600 mt-0.5 font-mono">{item.values}</p>
+              {group.items.map(item => {
+                const val = env[item.env]
+                const isSet = !!val
+                return (
+                  <div key={item.env} className="flex items-start gap-4 py-2.5 border-b border-terminal-border last:border-0">
+                    <div className="flex-1 min-w-0">
+                      <code className="text-sm font-mono text-market-blue">{item.env}</code>
+                      <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                      {isSet ? (
+                        <p className="text-xs text-slate-600 mt-0.5 font-mono">{mask(val)}</p>
+                      ) : (
+                        <p className="text-xs text-slate-700 mt-0.5 font-mono">{item.values}</p>
+                      )}
+                    </div>
+                    <div className="shrink-0 pt-0.5">
+                      <Badge variant={isSet ? 'green' : 'muted'}>{isSet ? 'Set' : 'Not set'}</Badge>
+                    </div>
                   </div>
-                  <div className="shrink-0 pt-0.5">
-                    <Badge variant="muted">Not set</Badge>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </Card>
         ))}
+
+        <Card className="p-5">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">System Status</h3>
+          <div className="space-y-2">
+            {systemStatus.map(({ label, status, note }) => (
+              <div key={label} className="flex items-center justify-between py-2 border-b border-terminal-border last:border-0">
+                <div>
+                  <div className="text-sm font-medium text-white">{label}</div>
+                  <div className="text-xs text-slate-500">{note}</div>
+                </div>
+                <Badge variant={status === 'active' ? 'green' : 'yellow'}>
+                  {status === 'active' ? 'Active' : 'Not configured'}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </Card>
 
         <Card className="p-5">
           <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Example .env.local</h3>
@@ -86,38 +141,17 @@ FINNHUB_API_KEY=your_finnhub_key_here
 # Research
 RESEARCH_PROVIDER=perplexity
 PERPLEXITY_API_KEY=your_perplexity_key_here
+TAVILY_API_KEY=your_tavily_key_here
 
 # AI Analysis
 ANTHROPIC_API_KEY=your_anthropic_key_here
 ANTHROPIC_MODEL=claude-haiku-4-5-20251001
 
-# Database (optional)
+# Database
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key`}
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key`}
           </pre>
-        </Card>
-
-        <Card className="p-5">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">System Status</h3>
-          <div className="space-y-2">
-            {[
-              { label: 'Mock Market Data', status: 'active', note: 'Always available as fallback' },
-              { label: 'Mock Research/News', status: 'active', note: 'Pre-loaded realistic news for major tickers' },
-              { label: 'Technical Indicators', status: 'active', note: 'RSI, MACD, EMA, SMA, Bollinger, ATR via technicalindicators' },
-              { label: 'Report Generation', status: 'active', note: 'Template-based when no AI key; AI-powered with Anthropic key' },
-              { label: 'Persistent Storage', status: 'limited', note: 'In-memory store (resets on server restart). Add Supabase for persistence.' },
-            ].map(({ label, status, note }) => (
-              <div key={label} className="flex items-center justify-between py-2 border-b border-terminal-border last:border-0">
-                <div>
-                  <div className="text-sm font-medium text-white">{label}</div>
-                  <div className="text-xs text-slate-500">{note}</div>
-                </div>
-                <Badge variant={status === 'active' ? 'green' : 'yellow'}>
-                  {status === 'active' ? 'Active' : 'Limited'}
-                </Badge>
-              </div>
-            ))}
-          </div>
         </Card>
       </div>
     </PageLayout>
