@@ -2,6 +2,8 @@ import PageLayout from '@/components/layout/PageLayout'
 import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 
+export const dynamic = 'force-dynamic'
+
 function mask(val: string | undefined): string {
   if (!val) return ''
   if (val.length <= 8) return '••••••••'

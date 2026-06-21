@@ -3,7 +3,7 @@ import { getMarketDataProvider } from '@/lib/market-data/provider'
 import { getResearchProvider } from '@/lib/research/provider'
 import { calculateIndicators } from '@/lib/indicators/service'
 import { generateTickerResearch } from '@/lib/agents/ticker-research-agent'
-import { db } from '@/lib/db/local-store'
+import { db } from '@/lib/db'
 import { logTool } from '@/lib/tools/audit-log'
 
 export async function GET(req: NextRequest, { params }: { params: { symbol: string } }) {
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest, { params }: { params: { symbol: stri
     if (includeReport && indicators) {
       report = await generateTickerResearch({ symbol, quote, profile, indicators, news, earnings })
 
-      const savedReport = db.saveReport({
+      const savedReport = await db.saveReport({
         reportType: 'ticker-deep-dive',
         title: `${symbol} Research — ${new Date().toLocaleDateString()}`,
         content: report,
