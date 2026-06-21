@@ -1,0 +1,17 @@
+name: Deno
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip (project migrated to Next.js)
+        run: echo "Deno workflow disabled — project is now Next.js"
