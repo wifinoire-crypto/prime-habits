@@ -8,8 +8,9 @@ import Badge, { ChangeBadge } from '@/components/ui/Badge'
 import IndicatorGrid from '@/components/ticker/IndicatorGrid'
 import NewsFeed from '@/components/ticker/NewsFeed'
 import MarkdownViewer from '@/components/ui/MarkdownViewer'
+import PriceChart from '@/components/ticker/PriceChart'
 import { LoadingScreen } from '@/components/ui/Spinner'
-import { Quote, CompanyProfile, IndicatorResult, NewsItem, EarningsEvent } from '@/lib/types'
+import { Quote, CompanyProfile, IndicatorResult, NewsItem, EarningsEvent, Candle } from '@/lib/types'
 import Link from 'next/link'
 
 interface TickerData {
@@ -18,6 +19,7 @@ interface TickerData {
   indicators: IndicatorResult | null
   news: NewsItem[]
   earnings: EarningsEvent[]
+  candles: Candle[]
   report?: string
 }
 
@@ -122,6 +124,9 @@ export default function TickerPage({ params }: { params: { symbol: string } }) {
           {/* Tab content */}
           {activeTab === 'overview' && (
             <div className="space-y-5">
+              {data.candles.length > 1 && (
+                <PriceChart candles={data.candles} symbol={SYM} />
+              )}
               <Card className="p-5">
                 <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Company Overview</h3>
                 <p className="text-sm text-slate-300 leading-relaxed mb-4">{data.profile.description ?? 'No description available.'}</p>

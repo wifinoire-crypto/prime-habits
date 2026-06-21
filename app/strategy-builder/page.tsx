@@ -24,6 +24,8 @@ export default function StrategyBuilderPage() {
   const [stopLoss, setStopLoss] = useState('5')
   const [takeProfit, setTakeProfit] = useState('15')
   const [saved, setSaved] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState('')
 
   const addRule = (type: 'entry' | 'exit') => {
     const rule = { field: 'rsi14', operator: '<', value: '50' }
@@ -44,17 +46,35 @@ export default function StrategyBuilderPage() {
     else setExitRules(prev => prev.filter((_, i) => i !== idx))
   }
 
-  const handleSave = () => {
-    // TODO: POST to /api/strategies
-    setSaved(true)
-    setTimeout(() => setSaved(false), 3000)
+  const handleSave = async () => {
+    if (!name.trim()) { setSaveError('Strategy name is required'); return }
+    setSaving(true)
+    setSaveError('')
+    try {
+      const res = await fetch('/api/strategies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, assetUniverse: universe, timeframe, entryRules, exitRules, stopLoss, takeProfit, positionSizing: 'fixed' }),
+      }).then(r => r.json())
+      if (!res.success) { setSaveError(res.error ?? 'Save failed'); return }
+      setSaved(true)
+      setTimeout(() => setSaved(false), 3000)
+    } catch (err) {
+      setSaveError(String(err))
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
     <PageLayout
       title="Strategy Builder"
       subtitle="Define systematic trading rules and entry/exit conditions"
-      action={<Button onClick={handleSave}>{saved ? '✓ Saved' : 'Save Strategy'}</Button>}>
+      action={<Button onClick={handleSave} loading={saving}>{saved ? '✓ Saved!' : 'Save Strategy'}</Button>}>
+
+      {saveError && (
+        <div className="mb-4 rounded-lg px-4 py-3 text-sm text-market-red bg-market-red-dim border border-market-red-border">{saveError}</div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 space-y-5">

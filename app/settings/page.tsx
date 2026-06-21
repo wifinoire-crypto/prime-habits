@@ -35,10 +35,8 @@ const CONFIG_ITEMS = [
   },
 ]
 
-function EnvStatus({ envKey }: { envKey: string }) {
-  const isSet = !!process.env[envKey]
-  return <Badge variant={isSet ? 'green' : 'muted'}>{isSet ? 'Set' : 'Not set'}</Badge>
-}
+// EnvStatus removed — process.env not accessible from client components.
+// Status is shown statically; users configure keys in .env.local
 
 export default function SettingsPage() {
   return (
