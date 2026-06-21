@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db/local-store'
+import { db } from '@/lib/db'
 import { getMarketDataProvider } from '@/lib/market-data/provider'
 import { getResearchProvider } from '@/lib/research/provider'
 import { calculateIndicators } from '@/lib/indicators/service'
@@ -9,7 +9,7 @@ import { format } from 'date-fns'
 import { Quote, NewsItem, IndicatorResult } from '@/lib/types'
 
 export async function GET() {
-  const reports = db.getReports().filter(r => r.reportType === 'morning-brief')
+  const reports = await db.getReports('morning-brief')
   return NextResponse.json({ success: true, data: reports })
 }
 
@@ -20,7 +20,7 @@ export async function POST() {
 
   try {
     // 1. Load watchlist
-    const symbols = db.getWatchedSymbols('default')
+    const symbols = await db.getWatchedSymbols('default')
     if (symbols.length === 0) {
       return NextResponse.json({ success: false, error: 'Watchlist is empty. Add some tickers first.' }, { status: 422 })
     }
@@ -95,7 +95,7 @@ export async function POST() {
     })
 
     // 7. Save report
-    const report = db.saveReport({
+    const report = await db.saveReport({
       reportType: 'morning-brief',
       title: `Morning Brief — ${today}`,
       content: briefContent,

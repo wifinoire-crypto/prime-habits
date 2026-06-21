@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db/local-store'
+import { db } from '@/lib/db'
 
 export async function GET() {
-  return NextResponse.json({ success: true, data: db.getStrategies() })
+  return NextResponse.json({ success: true, data: await db.getStrategies() })
 }
 
 export async function POST(req: NextRequest) {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'name is required' }, { status: 400 })
     }
 
-    const strategy = db.saveStrategy({
+    const strategy = await db.saveStrategy({
       name: name.trim(),
       description,
       assetUniverse: Array.isArray(assetUniverse) ? assetUniverse : (assetUniverse ?? '').split(',').map((s: string) => s.trim()).filter(Boolean),
